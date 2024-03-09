@@ -1,13 +1,22 @@
 # Welcome to $SPY Predictor! 🕵️
-It is a Long Short-Term Model (LSTM) Neural Network to find correlation for the $SPY stock over time!
+Using a Long Short-Term Memory (LSTM) Neural Network to find correlation for the $SPY ETF over time!
 
-## How it works
-The LSTM Neural Network is a Recurrent Neural Network (RNN) that uses long run and short run values during the training
-process. It is particularly designed to address the pitfalls of regular RNN's and work with temporal data.
+## Results
+First collected historical data on daily $SPY prices from https://finance.yahoo.com/quote/SPY/history. I collected data from January 29th, 1993, to March 8th, 2024.
 
-Collected historical data on daily $SPY prices from https://finance.yahoo.com/quote/SPY/history. I collected data from January 29th, 1993, to March 8th, 2024. 
+Trained the model with data from January 1st, 2023, to January 1st, 2024.
+![SPY Chart](SPY_chart.png)
 
-The Jupyter notebook has all the cool graphs for the data!
+## Background
+A *Neural Network* is an intricate series of equations that transforms data (numbers). Data is linearly transformed and then non-linearly transformed at *activation nodes*. The input data point is fed forward through one or more *layers* to generate a prediction output. The prediction output is compared with the actual output to compute the error.
+
+*Backwards propagation* is when the network updates the weights and biases used for linear transformation of data. This is done by setting the error gradients as close to 0 as possible.
+
+The whole thing gets updated after every input training data.
+
+A *Recurrent Neural Network* (*RNN*), extends a regular *Neural Network* by transforming data within a layer several times. It is used to work with temporal (time-based) data, because present values depend on the past.
+
+The *LSTM Neural Network* is an *RNN* that uses long-lived and short-lived values during the training process. It is particularly designed to address the pitfalls of regular *RNN*'s.
 
 ## Note
 This has been trained on bull market conditions, and so won't fare well
