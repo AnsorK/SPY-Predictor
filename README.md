@@ -4,7 +4,7 @@ Using a Long Short-Term Memory (LSTM) Neural Network to find correlation for the
 ## Results
 First collected historical data on daily $SPY prices from https://finance.yahoo.com/quote/SPY/history. I collected data from January 29th, 1993, to March 8th, 2024.
 
-Trained the model with data from January 1st, 2023, to January 1st, 2024.
+Trained the model with data from October 7th, 2022, to December 29th, 2023.
 ![SPY Chart](SPY_chart.png)
 
 ## Background
