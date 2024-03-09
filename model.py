@@ -29,8 +29,8 @@ of prices and volumes, and the output will be the
 61st day's price
 '''
 
-train = np.delete(df_train.values, [0, 1, 2], axis=1)
-test = np.delete(df_test.values, [0, 1, 2], axis=1)
+train = np.delete(df_train.values, [0, 1, 2], axis=1).astype(np.float32)
+test = np.delete(df_test.values, [0, 1, 2], axis=1).astype(np.float32)
 
 scaler = MinMaxScaler(feature_range=(-1, 1))
 train = scaler.fit_transform(train)
@@ -45,5 +45,5 @@ for i in range(len(train) - 60):
 train_in = np.array(train_in)
 train_out = np.array(train_out)
 
-train_in = torch.from_numpy(train_in).type(torch.Tensor)
-train_out = torch.from_numpy(train_out).type(torch.Tensor)
+train_in = torch.from_numpy(train_in)
+train_out = torch.from_numpy(train_out)
