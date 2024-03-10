@@ -1,8 +1,10 @@
+import matplotlib.pyplot as plt
 import mplfinance as mpf
 import numpy as np
 import pandas as pd
 from sklearn.preprocessing import MinMaxScaler
 import torch
+import torch.nn as nn
 
 '''
 Plot the Date, Open, High, Low, Close, and Volume
@@ -42,8 +44,74 @@ for i in range(len(train) - 60):
     train_in.append(train[i:i + 60])
     train_out.append(train[i + 60][0])
 
+test_in = []
+test_out = []
+for i in range(len(test) - 60):
+    test_in.append(test[i:i + 60])
+    test_out.append(test[i + 60][0])
+
 train_in = np.array(train_in)
 train_out = np.array(train_out)
 
+test_in = np.array(test_in)
+test_out = np.array(test_out)
+
 train_in = torch.from_numpy(train_in)
 train_out = torch.from_numpy(train_out)
+
+test_in = torch.from_numpy(test_in)
+test_out = torch.from_numpy(test_out)
+
+'''
+Setup the hyperparameters of the LSTM Neural Network,
+then train it
+
+Here, I train over the dataset 100 times
+'''
+
+input_dim = 2
+hidden_dim = 32
+num_layers = 2
+output_dim = 1
+
+class LSTM(nn.Module):
+    def __init__(self, input_dim, hidden_dim, num_layers, output_dim):
+        super(LSTM, self).__init__()
+
+        self.hidden_dim = hidden_dim
+        self.num_layers = num_layers
+
+        self.lstm = nn.LSTM(input_dim, hidden_dim, num_layers, batch_first=True)
+        self.fc = nn.Linear(hidden_dim, output_dim)
+
+    def forward(self, x):
+        h0 = torch.zeros(self.num_layers, x.size(0), self.hidden_dim, requires_grad=True)
+        c0 = torch.zeros(self.num_layers, x.size(0), self.hidden_dim, requires_grad=True)
+
+        out, _ = self.lstm(x, (h0.detach(), c0.detach()))
+
+        out = self.fc(out[:, -1, :])
+
+        return out
+
+model = LSTM(input_dim, hidden_dim, num_layers, output_dim)
+loss_fn = torch.nn.MSELoss()
+optimizer = torch.optim.Adam(model.parameters(), lr=0.01)
+
+num_epochs = 100
+hist = np.zeros(num_epochs)
+
+for epoch in range(num_epochs):
+    train_pred = model(train_in)
+
+    loss = loss_fn(train_pred, train_out)
+
+    hist[epoch] = loss.item()
+
+    optimizer.zero_grad()
+    loss.backward()
+    optimizer.step()
+
+plt.plot(hist, label="Error Ratio")
+plt.legend()
+plt.show()
