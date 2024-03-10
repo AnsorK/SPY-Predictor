@@ -7,28 +7,27 @@ import torch
 import torch.nn as nn
 
 '''
-Plot the Date, Open, High, Low, Close, and Volume
+Plot the Date, Open, High, Low, and Close
 
 Train with: October 7th 2022 - December 29th 2023
 Test on: January 1st 2024 - March 1st 2024
 '''
 
-df = pd.read_csv('SPY.csv', index_col=0, parse_dates=['Date'], usecols=['Date', 'Open', 'High', 'Low', 'Close', 'Volume'])
+df = pd.read_csv('SPY.csv', index_col=0, parse_dates=['Date'], usecols=['Date', 'Open', 'High', 'Low', 'Close'])
 
 df_train = df.loc['2022-10-07':'2024-01-02']
-df_test = df.loc['2024-01-01':'2024-03-01']
+df_test = df.loc['2023-10-06':'2024-03-01']
 
-mpf.plot(df_train, type='candle', volume=True, show_nontrading=True, title='$SPY - Oct 7th 2022 to Dec 29th 2023')
+mpf.plot(df_train, type='candle', show_nontrading=True, title='$SPY - Oct 7th 2022 to Dec 29th 2023')
 
 '''
 Prepare the data for training
 
-Only need close prices and volumes, then
-regularize them
+Input will be regularized close prices
 
 The input data will be 60 consecutive days worth
-of prices and volumes, and the output will be the
-61st day's price
+of prices, and the output will be the 61st day's
+price
 '''
 
 train = np.delete(df_train.values, [0, 1, 2], axis=1).astype(np.float32)
@@ -42,13 +41,13 @@ train_in = []
 train_out = []
 for i in range(len(train) - 60):
     train_in.append(train[i:i + 60])
-    train_out.append(train[i + 60][0])
+    train_out.append([train[i + 60][0]])
 
 test_in = []
 test_out = []
 for i in range(len(test) - 60):
     test_in.append(test[i:i + 60])
-    test_out.append(test[i + 60][0])
+    test_out.append([test[i + 60][0]])
 
 train_in = np.array(train_in)
 train_out = np.array(train_out)
@@ -69,7 +68,7 @@ then train it
 Here, I train over the dataset 100 times
 '''
 
-input_dim = 2
+input_dim = 1
 hidden_dim = 32
 num_layers = 2
 output_dim = 1
@@ -77,19 +76,15 @@ output_dim = 1
 class LSTM(nn.Module):
     def __init__(self, input_dim, hidden_dim, num_layers, output_dim):
         super(LSTM, self).__init__()
-
         self.hidden_dim = hidden_dim
         self.num_layers = num_layers
-
         self.lstm = nn.LSTM(input_dim, hidden_dim, num_layers, batch_first=True)
         self.fc = nn.Linear(hidden_dim, output_dim)
 
     def forward(self, x):
         h0 = torch.zeros(self.num_layers, x.size(0), self.hidden_dim, requires_grad=True)
         c0 = torch.zeros(self.num_layers, x.size(0), self.hidden_dim, requires_grad=True)
-
         out, _ = self.lstm(x, (h0.detach(), c0.detach()))
-
         out = self.fc(out[:, -1, :])
 
         return out
@@ -103,9 +98,7 @@ hist = np.zeros(num_epochs)
 
 for epoch in range(num_epochs):
     train_pred = model(train_in)
-
     loss = loss_fn(train_pred, train_out)
-
     hist[epoch] = loss.item()
 
     optimizer.zero_grad()
@@ -113,5 +106,18 @@ for epoch in range(num_epochs):
     optimizer.step()
 
 plt.plot(hist, label="Error Ratio")
-plt.legend()
+plt.ylabel("Error Ratio")
+plt.xlabel("Epoch")
 plt.show()
+
+'''
+Use the LSTM Neural Network to make predictions on new data
+'''
+
+test_pred = model(test_in)
+test_pred = scaler.inverse_transform(test_pred.detach().numpy())
+
+df_pred = pd.DataFrame(test_pred, columns=['Predicted Close'], index=df.index[-len(test_pred):])
+df_actual = df.loc['2024-01-03':'2024-03-01']
+
+mpf.plot(df_actual, type='candle', show_nontrading=True, title='$SPY - Jan 2nd 2024 to Mar 1st 2024 \n with Predictions', addplot=mpf.make_addplot(df_pred['Predicted Close'], color='green', secondary_y=False))

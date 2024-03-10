@@ -1,5 +1,5 @@
 # Welcome to $SPY Predictor! 🕵️
-Using a Long Short-Term Memory (LSTM) Neural Network to find correlation for the $SPY ETF over time!
+Using a Long Short-Term Memory (LSTM) Neural Network to find correlation for the $SPY ETF over time! Knowing 60 days of consecutive $SPY close prices allows me to predict the 61st day's close price!
 
 ## Charts
 First collected historical data on daily $SPY prices from https://finance.yahoo.com/quote/SPY/history. I collected data from January 29th, 1993, to March 8th, 2024.
@@ -9,6 +9,11 @@ Trained the model with closing prices and volumes from October 7th, 2022, to Dec
 
 The data is trained over 100 epochs making the error ratio (wrong predictions to total predictions) lower.
 ![Error Ratio](Error_ratio.png)
+
+Using the finished model to predict future prices. Remember, the previous 60 days are used to predict the present day's price.
+![Outcome](Outcome.png)
+
+Looking pretty close!
 
 ## Background
 A *Neural Network* is an intricate series of equations that transforms data (numbers). Data is linearly transformed and then non-linearly transformed at *activation nodes*. The input data point is fed forward through one or more *layers* to generate a prediction output. The prediction output is compared with the actual output to compute the error.
@@ -22,8 +27,7 @@ A *Recurrent Neural Network* (*RNN*), extends a regular *Neural Network* by tran
 The *LSTM Neural Network* is an *RNN* that uses long-lived and short-lived values during the training process. It is particularly designed to address the pitfalls of regular *RNN*'s.
 
 ## Note
-This has been trained on bull market conditions, and so won't fare well
-in a bear market.
+This has been trained on bull market conditions, and probably won't fare well in a bear market.
 
 Obviously not super complex, but fun to work on.
 
