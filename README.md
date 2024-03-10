@@ -15,7 +15,7 @@ A *Neural Network* is an intricate series of equations that transforms data (num
 
 *Backwards propagation* is when the network updates the weights and biases used for linear transformation of data. This is done by setting the error gradients as close to 0 as possible.
 
-The whole thing gets updated after every input training data.
+The whole thing gets updated during an *epoch*, which is one training session with data. Multiple *epochs* are conducted with the same training data.
 
 A *Recurrent Neural Network* (*RNN*), extends a regular *Neural Network* by transforming data within a layer several times. It is used to work with temporal (time-based) data, because present values depend on the past.
 
