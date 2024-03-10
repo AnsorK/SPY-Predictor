@@ -10,7 +10,7 @@ Trained the model with closing prices from October 7th, 2022, to December 29th, 
 The data is trained over 100 epochs making the error ratio (wrong predictions to total predictions) lower.
 ![Error Ratio](Error_ratio.png)
 
-Using the finished model to predict prices. Remember, the previous 60 days are used to predict the present day's price.
+Using the finished model to predict prices. Remember, the past 60 days are used to predict the present.
 ![Outcome](Outcome.png)
 
 Looking pretty close!
