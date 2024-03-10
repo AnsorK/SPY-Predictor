@@ -1,5 +1,5 @@
 # Welcome to $SPY Predictor! 🕵️
-Using a Long Short-Term Memory (LSTM) Neural Network to find correlation for the $SPY ETF over time! Knowing 60 days of consecutive $SPY close prices allows me to predict the 61st day's close price!
+Using a Long Short-Term Memory (LSTM) Neural Network with PyTorch to find correlation for the $SPY ETF over time! Knowing 60 days of consecutive $SPY close prices allows me to predict the 61st day's close price!
 
 ## Charts
 First collected historical data on daily $SPY prices from https://finance.yahoo.com/quote/SPY/history. I collected data from January 29th, 1993, to March 8th, 2024.
