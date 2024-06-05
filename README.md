@@ -6,13 +6,13 @@ Uncovering correlation within the $SPY ETF using a Long Short-Term Memory (LSTM)
 ## Charts
 Collected historical data on daily $SPY prices from https://finance.yahoo.com/quote/SPY/history. Data is from January 29th, 1993, to March 8th, 2024.
 
-Trained the model with closing prices from October 7th, 2022, to December 29th, 2023.
+Trained the model with closing prices from October 7th, 2022, to December 29th, 2023.\
 ![SPY Chart](SPY_chart.png)
 
-Visual of the training process.
+Visual of the training process.\
 ![MSE](mse.png)
 
-Using the finished model to predict prices.
+Using the finished model to predict prices.\
 ![Output](output.png)
 
 ## Background
