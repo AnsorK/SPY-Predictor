@@ -20,6 +20,9 @@ df_test = df.loc['2023-10-06':'2024-03-01']
 
 mpf.plot(df_train, type='candle', show_nontrading=True, title='$SPY - Oct 7th 2022 to Dec 29th 2023')
 
+print(f'Number of days to train with: {df_train.shape[0]}')
+print(f'Number of days to test with: {df_test.shape[0]}')
+
 '''
 Prepare the data for training
 
@@ -33,33 +36,23 @@ price
 train = np.delete(df_train.values, [0, 1, 2], axis=1).astype(np.float32)
 test = np.delete(df_test.values, [0, 1, 2], axis=1).astype(np.float32)
 
-scaler = MinMaxScaler(feature_range=(-1, 1))
-train = scaler.fit_transform(train)
-test = scaler.fit_transform(test)
+scaler_train, scaler_test = MinMaxScaler(feature_range=(-1, 1)), MinMaxScaler(feature_range=(-1, 1))
+train, test = scaler_train.fit_transform(train), scaler_test.fit_transform(test)
 
-train_in = []
-train_out = []
+train_in, train_out = [], []
 for i in range(len(train) - 60):
     train_in.append(train[i:i + 60])
     train_out.append([train[i + 60][0]])
 
-test_in = []
-test_out = []
+test_in, test_out = [], []
 for i in range(len(test) - 60):
     test_in.append(test[i:i + 60])
     test_out.append([test[i + 60][0]])
 
-train_in = np.array(train_in)
-train_out = np.array(train_out)
+test_out = scaler_test.inverse_transform(test_out)
 
-test_in = np.array(test_in)
-test_out = np.array(test_out)
-
-train_in = torch.from_numpy(train_in)
-train_out = torch.from_numpy(train_out)
-
-test_in = torch.from_numpy(test_in)
-test_out = torch.from_numpy(test_out)
+train_in, train_out = torch.from_numpy(np.array(train_in)), torch.from_numpy(np.array(train_out))
+test_in, test_out = torch.from_numpy(np.array(test_in)), np.array(test_out)
 
 '''
 Setup the hyperparameters of the LSTM Neural Network,
@@ -105,9 +98,10 @@ for epoch in range(num_epochs):
     loss.backward()
     optimizer.step()
 
-plt.plot(hist, label="Error Ratio")
-plt.ylabel("Error Ratio")
+plt.plot(hist, label="Mean Squared Error")
+plt.ylabel("Mean Squared Error")
 plt.xlabel("Epoch")
+plt.title("Training Status")
 plt.show()
 
 '''
@@ -115,9 +109,11 @@ Use the LSTM Neural Network to make predictions on new data
 '''
 
 test_pred = model(test_in)
-test_pred = scaler.inverse_transform(test_pred.detach().numpy())
+test_pred = scaler_test.inverse_transform(test_pred.detach().numpy())
 
 df_pred = pd.DataFrame(test_pred, columns=['Predicted Close'], index=df.index[-len(test_pred):])
 df_actual = df.loc['2024-01-03':'2024-03-01']
 
-mpf.plot(df_actual, type='candle', show_nontrading=True, title='$SPY - Jan 2nd 2024 to Mar 1st 2024 \n with Predictions', addplot=mpf.make_addplot(df_pred['Predicted Close'], color='green', secondary_y=False))
+mpf.plot(df_actual, type='candle', show_nontrading=True, title='$SPY - Jan 2nd 2024 to Mar 1st 2024 \n with Predictions (green line)', addplot=mpf.make_addplot(df_pred['Predicted Close'], color='green', secondary_y=False))
+
+print(f'Accuracy with 1% error tolerance: {np.sum(np.abs(test_pred - test_out) <= 5) / len(test_out) * 100:.2f}%')
