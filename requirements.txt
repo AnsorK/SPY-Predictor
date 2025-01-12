@@ -1,0 +1,7 @@
+# Needed libraries
+matplotlib
+mplfinance
+numpy
+pandas
+scikit-learn
+torch
