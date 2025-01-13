@@ -1,4 +1,5 @@
 # Needed libraries
+ipykernel
 matplotlib
 mplfinance
 numpy
