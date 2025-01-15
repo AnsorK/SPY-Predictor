@@ -1,5 +1,5 @@
 # $SPY Predictor 🕵️
-Uncovering correlation within the $SPY ETF using a Long Short-Term Memory (LSTM) Neural Network in PyTorch. Knowing 60 days of consecutive $SPY close prices allows me to predict the 61st day's close price with 78.05% accuracy*
+Uncovering correlation within the $SPY ETF using a Long Short-Term Memory (LSTM) Neural Network in PyTorch. Knowing 60 days of consecutive $SPY close prices allows me to predict the 61st day's close price with 82.93% accuracy*
 
 *Note: Only for 1/2/2024 - 3/1/2024 and allowing for 1% discrepancy
 
